@@ -1,16 +1,6 @@
-bl_info = {
-    "name": "Image Finder in Materials",
-   "blender": (4, 0, 0),  
-    "category": "Object",
-    "author": "Alvaro Rosati",
-    "description": "Search for a selected image in all materials' textures.",
-    "version": (1, 0),
-    "support": "COMMUNITY",
-}
-
 import bpy
 
-# Funzione che cerca l'immagine nei materiali
+
 def execute_script(self, context):
     image_name = context.id.name
     found = False
@@ -24,7 +14,7 @@ def execute_script(self, context):
     if not found:
         self.report({'WARNING'}, f"No match found for image {image_name} in materials.")
 
-# Funzione che cancella l'immagine se non è usata in nessun materiale
+
 def delete_image_if_unused(self, context):
     image_name = context.id.name
     found = False
@@ -41,7 +31,32 @@ def delete_image_if_unused(self, context):
         bpy.data.images.remove(image)
         self.report({'INFO'}, f"Deleted! {image_name} is not used in any materials.")
 
-# Definisci l'operatore che esegue lo script
+
+def delete_all_unused_images(self, context):
+    unused_images = []
+
+ 
+    for image in bpy.data.images:
+        found = False
+        for mat in bpy.data.materials:
+            if mat.use_nodes:
+                for node in mat.node_tree.nodes:
+                    if node.type == 'TEX_IMAGE' and node.image and node.image.name == image.name:
+                        found = True
+                        break
+            if found:
+                break
+        if not found:
+            unused_images.append(image.name)
+
+ 
+    for image_name in unused_images:
+        image = bpy.data.images.get(image_name)
+        if image:
+            bpy.data.images.remove(image)
+            self.report({'INFO'}, f"Deleted! {image_name} is not used in any materials.")
+
+
 class OUTLINER_OT_execute_script(bpy.types.Operator):
     bl_idname = "outliner.execute_script"
     bl_label = "Find Image in Materials"
@@ -51,7 +66,7 @@ class OUTLINER_OT_execute_script(bpy.types.Operator):
         execute_script(self, context)
         return {'FINISHED'}
 
-# Definisci l'operatore che cancella l'immagine se non è usata
+
 class OUTLINER_OT_delete_image(bpy.types.Operator):
     bl_idname = "outliner.delete_unused_image"
     bl_label = "Delete Image if Unused"
@@ -61,22 +76,35 @@ class OUTLINER_OT_delete_image(bpy.types.Operator):
         delete_image_if_unused(self, context)
         return {'FINISHED'}
 
-# Funzione per aggiungere gli operatori al menu contestuale dell'Outliner (Blender File -> Images)
+
+class OUTLINER_OT_delete_all_unused_images(bpy.types.Operator):
+    bl_idname = "outliner.delete_all_unused_images"
+    bl_label = "Delete All Unused Images"
+    bl_description = "Delete all images that are not used in any materials"
+
+    def execute(self, context):
+        delete_all_unused_images(self, context)
+        return {'FINISHED'}
+
+
 def menu_func(self, context):
     layout = self.layout
     if context.id and isinstance(context.id, bpy.types.Image):
         layout.operator(OUTLINER_OT_execute_script.bl_idname, text="Find Image in Materials", icon='VIEWZOOM')
         layout.operator(OUTLINER_OT_delete_image.bl_idname, text="Delete Image if Unused", icon='TRASH')
+    layout.operator(OUTLINER_OT_delete_all_unused_images.bl_idname, text="Delete All Unused Images", icon='TRASH')
 
-# Registra le classi e aggiungi le voci al menu contestuale dell'Outliner
+
 def register():
     bpy.utils.register_class(OUTLINER_OT_execute_script)
     bpy.utils.register_class(OUTLINER_OT_delete_image)
+    bpy.utils.register_class(OUTLINER_OT_delete_all_unused_images)
     bpy.types.OUTLINER_MT_context_menu.append(menu_func)
 
 def unregister():
     bpy.utils.unregister_class(OUTLINER_OT_execute_script)
     bpy.utils.unregister_class(OUTLINER_OT_delete_image)
+    bpy.utils.unregister_class(OUTLINER_OT_delete_all_unused_images)
     bpy.types.OUTLINER_MT_context_menu.remove(menu_func)
 
 if __name__ == "__main__":
