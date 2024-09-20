@@ -29,7 +29,8 @@ It simplifies the process of managing images directly within the Outliner, makin
 ## Author
 This addon was created by [Alvaro Rosati](https://sites.google.com/view/alvaro-rosati/home-page?authuser=0)
 
-Support My Project: [Donate with Paypal](https://www.paypal.com/paypalme/alvarorosati)
+[Support with Paypal](https://www.paypal.com/paypalme/alvarorosati)
 
+[Support with Gumroad](https://alvarobot.gumroad.com/l/imagefinderforblender)
 ## License
 This addon is released under the GPL-3.0-or-later License. See `LICENSE` for more information.
