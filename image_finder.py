@@ -7,6 +7,7 @@ bl_info = {
     "version": (1, 0),
     "support": "COMMUNITY",
 }
+
 import bpy
 
 def execute_script(self, context):
