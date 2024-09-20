@@ -13,58 +13,91 @@ import bpy
 def execute_script(self, context):
     image_name = context.id.name
     found = False
+    
     for mat in bpy.data.materials:
         if mat.use_nodes:
             for node in mat.node_tree.nodes:
-                if node.type == 'TEX_IMAGE' and node.image and node.image.name == image_name:
+                if node.type in {'TEX_IMAGE', 'TEX_ENVIRONMENT'} and node.image and node.image.name == image_name:
                     self.report({'INFO'}, f"Image {image_name} found in material {mat.name}")
                     found = True
 
+    for world in bpy.data.worlds:
+        if world.use_nodes:
+            for node in world.node_tree.nodes:
+                if node.type in {'TEX_IMAGE', 'TEX_ENVIRONMENT'} and node.image and node.image.name == image_name:
+                    self.report({'INFO'}, f"Image {image_name} found in world {world.name}")
+                    found = True
+
     if not found:
-        self.report({'WARNING'}, f"No match found for image {image_name} in materials.")
+        self.report({'WARNING'}, f"No match found for image {image_name} in materials or worlds.")
 
 def delete_image_if_unused(self, context):
     image_name = context.id.name
     found = False
+    
     for mat in bpy.data.materials:
         if mat.use_nodes:
             for node in mat.node_tree.nodes:
-                if node.type == 'TEX_IMAGE' and node.image and node.image.name == image_name:
+                if node.type in {'TEX_IMAGE', 'TEX_ENVIRONMENT'} and node.image and node.image.name == image_name:
                     self.report({'ERROR'}, f"Cannot delete: Image {image_name} is used in material {mat.name}")
                     found = True
                     break
 
     if not found:
+        for world in bpy.data.worlds:
+            if world.use_nodes:
+                for node in world.node_tree.nodes:
+                    if node.type in {'TEX_IMAGE', 'TEX_ENVIRONMENT'} and node.image and node.image.name == image_name:
+                        self.report({'ERROR'}, f"Cannot delete: Image {image_name} is used in world {world.name}")
+                        found = True
+                        break
+
+    if not found:
         image = context.id
         bpy.data.images.remove(image)
-        self.report({'INFO'}, f"Deleted! {image_name} is not used in any materials.")
+        self.report({'INFO'}, f"Deleted! {image_name} is not used in any materials or worlds.")
 
 def delete_all_unused_images(self, context):
     unused_images = []
 
     for image in bpy.data.images:
         found = False
+        
         for mat in bpy.data.materials:
             if mat.use_nodes:
                 for node in mat.node_tree.nodes:
-                    if node.type == 'TEX_IMAGE' and node.image and node.image.name == image.name:
+                    if node.type in {'TEX_IMAGE', 'TEX_ENVIRONMENT'} and node.image and node.image.name == image.name:
                         found = True
                         break
             if found:
                 break
+        
+        if not found:
+            for world in bpy.data.worlds:
+                if world.use_nodes:
+                    for node in world.node_tree.nodes:
+                        if node.type in {'TEX_IMAGE', 'TEX_ENVIRONMENT'} and node.image and node.image.name == image.name:
+                            found = True
+                            break
+                if found:
+                    break
+        
         if not found:
             unused_images.append(image.name)
 
-    for image_name in unused_images:
-        image = bpy.data.images.get(image_name)
-        if image:
-            bpy.data.images.remove(image)
-            self.report({'INFO'}, f"Deleted! {image_name} is not used in any materials.")
+    if unused_images:
+        for image_name in unused_images:
+            image = bpy.data.images.get(image_name)
+            if image:
+                bpy.data.images.remove(image)
+                self.report({'INFO'}, f"Deleted! {image_name} is not used in any materials or worlds.")
+    else:
+        self.report({'WARNING'}, "No Unused images found to delete.")
 
 class OUTLINER_OT_execute_script(bpy.types.Operator):
     bl_idname = "outliner.execute_script"
-    bl_label = "Find Image in Materials"
-    bl_description = "Search for the selected image in all materials' textures"
+    bl_label = "Find Image in Materials or Worlds"
+    bl_description = "Search for the selected image in all materials' textures and worlds"
 
     def execute(self, context):
         execute_script(self, context)
@@ -73,7 +106,7 @@ class OUTLINER_OT_execute_script(bpy.types.Operator):
 class OUTLINER_OT_delete_image(bpy.types.Operator):
     bl_idname = "outliner.delete_unused_image"
     bl_label = "Delete Image if Unused"
-    bl_description = "Delete the selected image if it is not used in any materials"
+    bl_description = "Delete the selected image if it is not used in any materials or worlds"
 
     def execute(self, context):
         delete_image_if_unused(self, context)
@@ -82,7 +115,7 @@ class OUTLINER_OT_delete_image(bpy.types.Operator):
 class OUTLINER_OT_delete_all_unused_images(bpy.types.Operator):
     bl_idname = "outliner.delete_all_unused_images"
     bl_label = "Delete All Unused Images"
-    bl_description = "Delete all images that are not used in any materials"
+    bl_description = "Delete all images that are not used in any materials or worlds"
 
     def execute(self, context):
         delete_all_unused_images(self, context)
@@ -91,7 +124,7 @@ class OUTLINER_OT_delete_all_unused_images(bpy.types.Operator):
 def menu_func(self, context):
     layout = self.layout
     if context.id and isinstance(context.id, bpy.types.Image):
-        layout.operator(OUTLINER_OT_execute_script.bl_idname, text="Find Image in Materials", icon='VIEWZOOM')
+        layout.operator(OUTLINER_OT_execute_script.bl_idname, text="Find Image in Materials or Worlds", icon='VIEWZOOM')
         layout.operator(OUTLINER_OT_delete_image.bl_idname, text="Delete Image if Unused", icon='TRASH')
     layout.operator(OUTLINER_OT_delete_all_unused_images.bl_idname, text="Delete All Unused Images", icon='TRASH')
 
@@ -109,3 +142,4 @@ def unregister():
 
 if __name__ == "__main__":
     register()
+
