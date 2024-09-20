@@ -7,7 +7,8 @@
 ## Introduction
 While Blender provides native tools for file cleanup, this addon makes it more convenient to manage images directly from the Outliner. With just a right-click, you can easily find images used in materials or delete unused images. It's a one-stop solution for lazy users who want to streamline their workflow without jumping through multiple menus.
 
-![image](https://github.com/user-attachments/assets/d5e04606-c19e-434f-b077-3b7c25d33b68)
+![image](https://github.com/user-attachments/assets/4a2820c0-2e8d-4d41-9e62-24ccc4c7fa04)
+
 
 
 ## Description
