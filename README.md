@@ -1,13 +1,36 @@
+![image](https://github.com/user-attachments/assets/26364713-9e28-4ebe-a372-d04dd9a667d5)
+
+
 # Image-Finder-Materials-Blender
+
 
 ## Introduction
 While Blender provides native tools for file cleanup, this addon makes it more convenient to manage images directly from the Outliner. With just a right-click, you can easily find images used in materials or delete unused images. It's a one-stop solution for lazy users who want to streamline their workflow without jumping through multiple menus.
 
+![image](https://github.com/user-attachments/assets/d5e04606-c19e-434f-b077-3b7c25d33b68)
+
+
 ## Description
 This addon for Blender allows you to:
-1. **Find a selected image in all materials' textures**.
-2. **Delete a selected image if it is not associated with any materials**.
-3. **Delete all unused images** in a single action.
+**Find a selected image in all materials' textures**.
+
+  ![image](https://github.com/user-attachments/assets/53199b88-1685-4002-a78a-6ff171c9d7ee)
+  
+  ![image](https://github.com/user-attachments/assets/13e72faf-4ae5-414c-b16a-b9d4d5807f25)
+  
+  ![image](https://github.com/user-attachments/assets/cf5054ae-c17e-44a4-a1ae-f667651667d8)
+ 
+
+**Delete a selected image if it is not associated with any materials**.
+
+![image](https://github.com/user-attachments/assets/ce6fea96-d2ac-41e4-9fbb-33028a36161a)
+
+![image](https://github.com/user-attachments/assets/6b8a240c-805c-40f3-a9f1-0909d6a1237c)
+
+
+**Delete all unused images** in a single action.
+
+![image](https://github.com/user-attachments/assets/d8934240-571e-4ec8-b20b-dc7871230fa6)
 
 It simplifies the process of managing images directly within the Outliner, making it more accessible from one convenient menu.
 
