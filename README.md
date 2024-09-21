@@ -50,11 +50,12 @@ It simplifies the process of managing images directly within the Outliner, makin
   - **Delete Image if Unused**: If the image is not used in any materials, it will be deleted, and a confirmation message will be displayed.
   - **Delete All Unused Images**: This option will delete all images not associated with any materials and notify you of the deletions. All deleted images will be listed in the info panel.
 
-## Author
-This addon was created by [Alvaro Rosati](https://sites.google.com/view/alvaro-rosati/home-page?authuser=0)
+## Support this project
 
 [Support with Paypal](https://www.paypal.com/paypalme/alvarorosati)
 
 [Support with Gumroad](https://alvarobot.gumroad.com/l/imagefinderforblender)
+
+[Alvaro Rosati Website](https://sites.google.com/view/alvaro-rosati/home-page?authuser=0)
 ## License
 This addon is released under the GPL-3.0-or-later License. See `LICENSE` for more information.
